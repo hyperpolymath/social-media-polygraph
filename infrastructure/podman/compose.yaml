@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # ArangoDB
+  arangodb:
+    image: arangodb:3.11
+    container_name: polygraph-arangodb
+    environment:
+      ARANGO_ROOT_PASSWORD: changeme
+    ports:
+      - "8529:8529"
+    volumes:
+      - arangodb-data:/var/lib/arangodb3
+      - arangodb-apps:/var/lib/arangodb3-apps
+    networks:
+      - polygraph-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8529/_api/version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # XTDB
+  xtdb:
+    image: juxt/xtdb-standalone:latest
+    container_name: polygraph-xtdb
+    ports:
+      - "3000:3000"
+    volumes:
+      - xtdb-data:/var/xtdb
+    networks:
+      - polygraph-network
+    restart: unless-stopped
+    environment:
+      XTDB_ENABLE_BYTEUTILS_SHA1: "true"
+
+  # Dragonfly (Redis-compatible cache)
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    container_name: polygraph-dragonfly
+    ports:
+      - "6379:6379"
+    volumes:
+      - dragonfly-data:/data
+    networks:
+      - polygraph-network
+    restart: unless-stopped
+    command: >
+      --maxmemory=2gb
+      --proactor_threads=2
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Containerfile
+    container_name: polygraph-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ARANGO_HOST=arangodb
+      - ARANGO_PORT=8529
+      - ARANGO_PASSWORD=changeme
+      - XTDB_HOST=xtdb
+      - XTDB_NODE_URL=http://xtdb:3000
+      - DRAGONFLY_HOST=dragonfly
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-this-jwt-secret-key}
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+    depends_on:
+      arangodb:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+      xtdb:
+        condition: service_started
+    networks:
+      - polygraph-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend (will be added)
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Containerfile
+    container_name: polygraph-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - polygraph-network
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://localhost:8000
+
+volumes:
+  arangodb-data:
+  arangodb-apps:
+  xtdb-data:
+  dragonfly-data:
+
+networks:
+  polygraph-network:
+    driver: bridge

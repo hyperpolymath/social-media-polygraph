@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "social-media-polygraph"
+version = "0.1.0"
+description = "AI-powered social media fact-checking and misinformation detection system"
+authors = ["Social Media Polygraph Team"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0"}
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+python-multipart = "^0.0.6"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-arango = "^7.8.0"
+xtdb-py = "^0.2.0"
+redis = "^5.0.1"
+spacy = "^3.7.0"
+transformers = "^4.36.0"
+torch = "^2.1.0"
+scikit-learn = "^1.4.0"
+numpy = "^1.26.0"
+pandas = "^2.1.0"
+httpx = "^0.26.0"
+beautifulsoup4 = "^4.12.0"
+newspaper3k = "^0.2.8"
+textblob = "^0.17.1"
+langdetect = "^1.0.9"
+aiohttp = "^3.9.0"
+python-dotenv = "^1.0.0"
+loguru = "^0.7.2"
+tenacity = "^8.2.3"
+slowapi = "^0.1.9"
+prometheus-fastapi-instrumentator = "^6.1.0"
+alembic = "^1.13.0"
+celery = "^5.3.0"
+flower = "^2.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.23.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.12.0"
+black = "^24.0.0"
+ruff = "^0.1.0"
+mypy = "^1.8.0"
+httpx = "^0.26.0"
+faker = "^22.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=app --cov-report=html --cov-report=term-missing"
