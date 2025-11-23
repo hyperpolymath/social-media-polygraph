@@ -1,38 +1,28 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.pytest_cache/
-.coverage
-htmlcov/
-.mypy_cache/
-.ruff_cache/
-models_cache/
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Elixir
+_build/
+deps/
+*.beam
+*.ez
+.fetch
+erl_crash.dump
+*.plt
+*.plt.hash
+.elixir_ls/
+
+# ReScript
+lib/bs/
+.bsb.lock
+.merlin
+
+# Deno
+.deno/
+deno.lock
 
 # Node
 node_modules/
@@ -83,3 +73,31 @@ temp/
 
 # Container
 *.tar
+
+# SSL Certificates & Keys
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+infrastructure/configs/ssl/*.pem
+infrastructure/configs/ssl/*.key
+infrastructure/configs/ssl/*.crt
+
+# Secrets & Credentials
+.env
+.env.*
+!.env.example
+secrets/
+credentials.json
+*.secret
+
+# Nix
+result
+result-*
+.direnv/
+
+# WASM build artifacts
+*.wasm
+pkg/

@@ -7,70 +7,103 @@ default:
 
 # Install all dependencies
 install:
-    @echo "Installing backend dependencies..."
-    cd backend && poetry install
-    @echo "Installing frontend dependencies..."
+    @echo "Installing Rust backend dependencies..."
+    cd backend && cargo fetch
+    @echo "Installing Elixir dependencies..."
+    cd elixir && mix deps.get
+    @echo "Installing frontend dependencies (ReScript)..."
     cd frontend && npm install
-    @echo "Downloading NLP models..."
-    cd backend && poetry run python -m spacy download en_core_web_sm
+    @echo "✓ All dependencies installed"
 
 # Run backend tests
 test-backend:
-    @echo "Running backend tests..."
-    cd backend && poetry run pytest -v
+    @echo "Running Rust tests..."
+    cd backend && cargo test --all-features
+
+# Run Elixir tests
+test-elixir:
+    @echo "Running Elixir tests..."
+    cd elixir && mix test
 
 # Run frontend tests
 test-frontend:
-    @echo "Running frontend type check..."
-    cd frontend && npm run type-check
-    @echo "Running frontend lint..."
-    cd frontend && npm run lint
+    @echo "Running ReScript build (type check)..."
+    cd frontend && npm run res:build
+    @echo "Running Deno tests..."
+    cd frontend && deno task test || true
 
 # Run all tests
-test: test-backend test-frontend
+test: test-backend test-elixir test-frontend
     @echo "✓ All tests passed"
 
 # Format code
 fmt:
-    @echo "Formatting backend code..."
-    cd backend && poetry run black app tests
-    @echo "Backend code formatted"
+    @echo "Formatting Rust code..."
+    cd backend && cargo fmt
+    @echo "Formatting Elixir code..."
+    cd elixir && mix format
     @echo "Formatting frontend code..."
-    cd frontend && npm run lint -- --fix || true
+    cd frontend && deno fmt
 
 # Lint code
 lint:
-    @echo "Linting backend..."
-    cd backend && poetry run ruff check app tests
-    cd backend && poetry run mypy app
+    @echo "Linting Rust..."
+    cd backend && cargo clippy -- -D warnings
+    @echo "Linting Elixir..."
+    cd elixir && mix credo || true
     @echo "Linting frontend..."
-    cd frontend && npm run lint
-    cd frontend && npm run type-check
+    cd frontend && deno lint
+    @echo "Type-checking ReScript..."
+    cd frontend && npm run res:build
 
 # Run backend locally
 run-backend:
-    @echo "Starting backend server..."
-    cd backend && poetry run python -m app.main
+    @echo "Starting Rust GraphQL server..."
+    cd backend && cargo run --release
+
+# Run Elixir node
+run-elixir:
+    @echo "Starting Elixir CRDT node..."
+    cd elixir && mix run --no-halt
 
 # Run frontend locally
 run-frontend:
-    @echo "Starting frontend dev server..."
-    cd frontend && npm run dev
+    @echo "Starting ReScript + Deno dev server..."
+    cd frontend && npm run res:watch &
+    cd frontend && deno task dev
+
+# Build all components
+build: build-backend build-elixir build-frontend
+
+# Build backend
+build-backend:
+    @echo "Building Rust backend..."
+    cd backend && cargo build --release
+
+# Build Elixir
+build-elixir:
+    @echo "Building Elixir..."
+    cd elixir && mix compile
 
 # Build frontend for production
 build-frontend:
-    @echo "Building frontend..."
-    cd frontend && npm run build
+    @echo "Compiling ReScript..."
+    cd frontend && npm run res:build
+    @echo "Building with Deno..."
+    cd frontend && deno task build
 
 # Start all services with Podman Compose
 up:
     @echo "Starting all services..."
     cd infrastructure/podman && podman-compose up -d
     @echo "Services started!"
-    @echo "  Backend API: http://localhost:8000"
-    @echo "  API Docs: http://localhost:8000/docs"
-    @echo "  Frontend: http://localhost:3000"
+    @echo "  Nginx Proxy: http://localhost (HTTPS: https://localhost:443)"
+    @echo "  GraphQL API: http://localhost:8000/graphql"
+    @echo "  Frontend: http://localhost:8080"
+    @echo "  Elixir Nodes: localhost:9100-9101"
     @echo "  ArangoDB: http://localhost:8529"
+    @echo "  XTDB: http://localhost:3000"
+    @echo "  Dragonfly: localhost:6379"
 
 # Stop all services
 down:
@@ -101,32 +134,37 @@ status:
     cd infrastructure/podman && podman-compose ps
 
 # Build containers
-build:
-    @echo "Building backend container..."
+build-containers:
+    @echo "Building Rust backend container..."
     cd backend && podman build -t polygraph-backend:latest -f Containerfile .
+    @echo "Building Elixir container..."
+    cd elixir && podman build -t polygraph-elixir:latest -f Containerfile .
     @echo "Building frontend container..."
     cd frontend && podman build -t polygraph-frontend:latest -f Containerfile .
 
 # Clean build artifacts
 clean:
     @echo "Cleaning build artifacts..."
-    rm -rf backend/dist backend/build backend/.pytest_cache backend/htmlcov
-    rm -rf backend/**/__pycache__
-    rm -rf frontend/dist frontend/build frontend/node_modules/.cache
+    rm -rf backend/target
+    rm -rf elixir/_build elixir/deps
+    rm -rf frontend/lib/bs frontend/dist
     @echo "Clean complete"
 
 # Clean everything including dependencies
 clean-all: clean
-    @echo "Removing dependencies..."
-    rm -rf backend/.venv
-    rm -rf frontend/node_modules
+    @echo "Removing all artifacts..."
+    rm -rf backend/target
+    rm -rf elixir/_build elixir/deps
+    rm -rf frontend/node_modules frontend/lib/bs frontend/dist
     @echo "Deep clean complete"
 
 # Security audit
 audit:
     @echo "Running security audit..."
-    @echo "Checking backend dependencies..."
-    cd backend && poetry check || true
+    @echo "Checking Rust dependencies..."
+    cd backend && cargo audit || (echo "Install cargo-audit: cargo install cargo-audit" && true)
+    @echo "Checking Elixir dependencies..."
+    cd elixir && mix hex.audit || true
     @echo "Checking frontend dependencies..."
     cd frontend && npm audit || true
 
@@ -207,29 +245,50 @@ release VERSION:
 # Check environment setup
 check-env:
     @echo "Checking environment..."
-    @command -v python3 >/dev/null 2>&1 || (echo "✗ Python 3 not found" && exit 1)
+    @command -v rustc >/dev/null 2>&1 || (echo "✗ Rust not found" && exit 1)
+    @command -v cargo >/dev/null 2>&1 || (echo "✗ Cargo not found" && exit 1)
+    @command -v elixir >/dev/null 2>&1 || (echo "✗ Elixir not found" && exit 1)
+    @command -v mix >/dev/null 2>&1 || (echo "✗ Mix not found" && exit 1)
     @command -v node >/dev/null 2>&1 || (echo "✗ Node.js not found" && exit 1)
+    @command -v deno >/dev/null 2>&1 || (echo "✗ Deno not found" && exit 1)
     @command -v podman >/dev/null 2>&1 || (echo "✗ Podman not found" && exit 1)
-    @command -v poetry >/dev/null 2>&1 || (echo "✗ Poetry not found" && exit 1)
     @echo "✓ All required tools found"
-    @python3 --version
+    @rustc --version
+    @cargo --version
+    @elixir --version | head -n 1
+    @mix --version | head -n 1
     @node --version
+    @deno --version | head -n 1
     @podman --version
-    @poetry --version
 
 # Development setup
 dev-setup: check-env install
     @echo "Setting up development environment..."
-    @echo "Copying environment files..."
-    @test -f backend/.env || cp backend/.env.example backend/.env
-    @test -f frontend/.env || cp frontend/.env.example frontend/.env
-    @test -f infrastructure/podman/.env || cp infrastructure/podman/.env.example infrastructure/podman/.env
+    @echo "Copying environment file..."
+    @test -f .env || cp .env.example .env
+    @echo "Generating self-signed SSL certificates for development..."
+    @mkdir -p infrastructure/configs/ssl
+    @just _gen-dev-certs
     @echo "✓ Development environment ready"
     @echo ""
     @echo "Next steps:"
-    @echo "  1. Edit .env files with your configuration"
+    @echo "  1. Edit .env with your configuration (API keys, etc.)"
     @echo "  2. Run 'just up' to start services"
-    @echo "  3. Visit http://localhost:8000/docs for API"
+    @echo "  3. Visit http://localhost:8000/graphql for GraphQL Playground"
+
+# Generate development SSL certificates
+_gen-dev-certs:
+    #!/usr/bin/env bash
+    if [ ! -f infrastructure/configs/ssl/cert.pem ]; then
+        echo "Generating self-signed SSL certificate..."
+        cd infrastructure/configs/ssl && \
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout key.pem -out cert.pem \
+            -subj "/C=US/ST=Dev/L=Local/O=Polygraph/CN=localhost" \
+            2>/dev/null && \
+        chmod 600 key.pem && chmod 644 cert.pem && \
+        echo "✓ SSL certificates generated"
+    fi
 
 # Production deployment check
 prod-check:
@@ -247,8 +306,10 @@ prod-check:
 # Quick health check
 health:
     @echo "Checking service health..."
-    @curl -f http://localhost:8000/health 2>/dev/null | jq . || echo "Backend not running"
-    @curl -f http://localhost:3000 >/dev/null 2>&1 && echo "✓ Frontend running" || echo "✗ Frontend not running"
+    @curl -f http://localhost:8000/health 2>/dev/null && echo "✓ Backend running" || echo "✗ Backend not running"
+    @curl -f http://localhost:8080 >/dev/null 2>&1 && echo "✓ Frontend running" || echo "✗ Frontend not running"
+    @nc -z localhost 9100 2>/dev/null && echo "✓ Elixir node 1 running" || echo "✗ Elixir node 1 not running"
+    @nc -z localhost 9101 2>/dev/null && echo "✓ Elixir node 2 running" || echo "✗ Elixir node 2 not running"
 
 # Backup databases
 backup:

@@ -1,25 +1,33 @@
-# Multi-stage build for React frontend
-FROM node:20-alpine as builder
+# Multi-stage build for ReScript + Deno frontend
+
+FROM denoland/deno:1.40.0 as builder
 
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json bsconfig.json deno.json ./
 
-# Install dependencies
-RUN npm ci
+# Install Node dependencies for ReScript
+COPY --from=node:20-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:20-slim /usr/local/bin/npm /usr/local/bin/npm
+
+RUN npm install
 
 # Copy source code
-COPY . .
+COPY src ./src
+COPY public ./public
+COPY index.html ./
 
-# Build application
-RUN npm run build
+# Build ReScript
+RUN npm run res:build
 
+# Build for production with Deno
+RUN deno task build
 
 # Production stage with nginx
 FROM nginx:alpine
 
-# Copy built files from builder
+# Copy built files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration

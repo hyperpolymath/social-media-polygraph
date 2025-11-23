@@ -17,7 +17,7 @@ Social Media Polygraph is a comprehensive, AI-powered platform for verifying cla
 - **🤖 Advanced NLP**: Entity extraction, sentiment analysis, and claim decomposition
 - **📊 Credibility Scoring**: Sophisticated algorithms evaluate source reliability
 - **⏱️ Temporal Tracking**: Track how claim verifications change over time using XTDB
-- **🌐 RESTful API**: Full-featured API with authentication and rate limiting
+- **🌐 GraphQL API**: Type-safe API with real-time subscriptions
 - **💻 Web Interface**: Modern React frontend for easy claim verification
 - **🔌 Browser Extension**: In-context fact-checking on social media platforms
 - **📈 Analytics**: Comprehensive metrics and reporting
@@ -25,33 +25,43 @@ Social Media Polygraph is a comprehensive, AI-powered platform for verifying cla
 ## Technology Stack
 
 ### Backend
-- **Python 3.11** with FastAPI
+- **Rust 1.75** with Axum web framework
+- **async-graphql** - Type-safe GraphQL server
+- **WASM** - WebAssembly modules for browser-side performance
 - **ArangoDB** - Multi-model database (document, graph, key-value)
 - **XTDB** - Temporal database for claim history tracking
 - **Dragonfly** - High-performance Redis-compatible cache
-- **spaCy & Transformers** - NLP and ML models
-- **Poetry** - Dependency management
+- **Cargo** - Rust package manager
+
+### Distributed State Layer
+- **Elixir 1.15** - Distributed, fault-tolerant runtime
+- **CRDTs** (Conflict-Free Replicated Data Types) - Eventually consistent distributed state
+- **Erlang distribution** - Multi-node clustering
 
 ### Frontend
-- **React 18** with TypeScript
-- **Vite** - Fast build tool
+- **ReScript** - Type-safe functional language compiling to JavaScript
+- **Deno** - Secure TypeScript/JavaScript runtime
+- **React 18** - UI framework
 - **TailwindCSS** - Styling
-- **React Query** - Data fetching
-- **React Router** - Navigation
+- **GraphQL Codegen** - Type-safe GraphQL client
 
 ### Infrastructure
-- **Podman** - Container runtime
+- **Podman** - Container runtime (rootless containers)
 - **Podman Compose** - Multi-container orchestration
+- **Nix** - Reproducible builds and development environments
+- **Nginx** - Reverse proxy with SSL termination
 - **GitHub Actions** - CI/CD
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.11+
-- Node.js 20+
-- Podman or Docker
-- Poetry (for Python dependency management)
+- Rust 1.75+
+- Elixir 1.15+
+- Node.js 20+ (for ReScript compilation)
+- Deno 1.40+
+- Podman (or Docker)
+- Nix (optional but recommended)
 
 ### Option 1: Using Podman Compose (Recommended)
 
@@ -65,65 +75,96 @@ cd social-media-polygraph
 ```
 
 This will start:
-- Backend API: http://localhost:8000
-- Frontend: http://localhost:3000
+- Nginx Reverse Proxy: http://localhost (HTTPS: https://localhost:443)
+- Backend GraphQL API: http://localhost:8000/graphql
+- Frontend: http://localhost:8080
+- Elixir CRDT Nodes: localhost:9100-9101
 - ArangoDB: http://localhost:8529
 - XTDB: http://localhost:3000
 - Dragonfly: localhost:6379
 
-API Documentation: http://localhost:8000/docs
+GraphQL Playground: http://localhost:8000/graphql (dev mode only)
 
-### Option 2: Manual Setup
+### Option 2: Using Nix (Recommended for Reproducibility)
 
-#### Backend Setup
+```bash
+# Enter development shell with all dependencies
+nix develop
+
+# Start services
+just up
+
+# Or run specific components
+just run-backend
+just run-frontend
+```
+
+### Option 3: Manual Setup
+
+#### Backend Setup (Rust)
 
 ```bash
 cd backend
 
-# Install dependencies
-poetry install
+# Build the project
+cargo build --release
 
 # Copy environment file
-cp .env.example .env
-
-# Edit .env with your configuration
-
-# Run database migrations (if applicable)
-# poetry run alembic upgrade head
-
-# Download NLP models
-poetry run python -m spacy download en_core_web_sm
+cp ../.env.example ../.env
 
 # Run the server
-poetry run python -m app.main
+cargo run --release
 ```
 
-#### Frontend Setup
+#### Elixir CRDT Layer
+
+```bash
+cd elixir
+
+# Install dependencies
+mix deps.get
+
+# Compile
+mix compile
+
+# Run node
+mix run --no-halt
+```
+
+#### Frontend Setup (ReScript + Deno)
 
 ```bash
 cd frontend
 
-# Install dependencies
+# Install npm dependencies for ReScript
 npm install
 
-# Copy environment file
-cp .env.example .env
+# Compile ReScript to JavaScript
+npm run res:build
 
-# Start development server
-npm run dev
+# Build with Deno
+deno task build
+
+# Or run dev server
+deno task dev
 ```
 
-## API Usage
+## GraphQL API Usage
 
 ### Verify a Claim
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/claims/verify" \
+curl -X POST "http://localhost:8000/graphql" \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "The Earth is flat",
-    "url": "https://example.com/post",
-    "platform": "twitter"
+    "query": "mutation VerifyClaim($input: ClaimInput!) { verifyClaim(input: $input) { claimId verdict confidence explanation sources { name url rating } credibilityScore } }",
+    "variables": {
+      "input": {
+        "text": "The Earth is flat",
+        "sourceUrl": "https://example.com/post",
+        "platform": "TWITTER"
+      }
+    }
   }'
 ```
 
@@ -131,29 +172,38 @@ curl -X POST "http://localhost:8000/api/v1/claims/verify" \
 
 ```json
 {
-  "success": true,
-  "claim_id": "abc123",
-  "analysis": {
-    "claim": {
-      "id": "abc123",
-      "text": "The Earth is flat",
-      "status": "verified"
-    },
-    "verification": {
-      "verdict": "false",
+  "data": {
+    "verifyClaim": {
+      "claimId": "abc123",
+      "verdict": "FALSE",
       "confidence": 0.95,
       "explanation": "This claim has been thoroughly debunked by scientific evidence...",
-      "fact_checks": [
+      "sources": [
         {
-          "source": "Science Fact Checker",
-          "verdict": "false",
-          "rating": 0.95
+          "name": "Google Fact Check",
+          "url": "https://factcheck.example.com/earth-shape",
+          "rating": 0.98
         }
       ],
-      "credibility_score": 0.15
+      "credibilityScore": 0.15
     }
-  },
-  "processing_time": 1.234
+  }
+}
+```
+
+### Query Claim History (Temporal Tracking)
+
+```graphql
+query ClaimHistory($id: ID!) {
+  claimHistory(id: $id) {
+    timestamp
+    verdict
+    confidence
+    sources {
+      name
+      rating
+    }
+  }
 }
 ```
 
@@ -178,129 +228,181 @@ curl -X POST "http://localhost:8000/api/v1/claims/verify" \
 
 ### Running Tests
 
-#### Backend
+#### Backend (Rust)
 
 ```bash
 cd backend
-poetry run pytest
-poetry run pytest --cov=app --cov-report=html
+cargo test
+cargo test --release
+cargo clippy -- -D warnings
 ```
 
-#### Frontend
+#### Elixir
+
+```bash
+cd elixir
+mix test
+mix format --check-formatted
+mix credo --strict
+```
+
+#### Frontend (ReScript)
 
 ```bash
 cd frontend
-npm run test
-npm run type-check
-npm run lint
+npm run res:build  # ReScript type-checking
+deno task test
+deno lint
 ```
 
 ### Code Quality
 
 ```bash
-# Backend
+# Rust
 cd backend
-poetry run black app tests
-poetry run ruff check app tests
-poetry run mypy app
+cargo fmt --check
+cargo clippy -- -D warnings
+cargo audit
 
-# Frontend
+# Elixir
+cd elixir
+mix format
+mix credo
+mix dialyzer
+
+# ReScript/Deno
 cd frontend
-npm run lint
-npm run type-check
+npm run res:build
+deno fmt --check
+deno lint
 ```
 
 ## Project Structure
 
 ```
 social-media-polygraph/
-├── backend/                 # Python FastAPI backend
-│   ├── app/
-│   │   ├── api/            # API endpoints
-│   │   ├── core/           # Core configuration
-│   │   ├── db/             # Database clients
-│   │   ├── ml/             # ML/NLP modules
-│   │   ├── models/         # Pydantic models
-│   │   └── services/       # Business logic
-│   └── tests/              # Backend tests
-├── frontend/               # React frontend
-│   └── src/
-│       ├── components/     # React components
-│       ├── pages/          # Page components
-│       ├── services/       # API clients
-│       └── types/          # TypeScript types
-├── browser-extension/      # Browser extension
-│   ├── src/               # Extension code
-│   └── public/            # Extension assets
-├── infrastructure/        # Infrastructure configs
-│   └── podman/           # Podman compose files
-├── scripts/              # Utility scripts
-└── docs/                 # Documentation
+├── backend/                 # Rust GraphQL backend
+│   ├── src/
+│   │   ├── api/            # GraphQL schema and resolvers
+│   │   ├── db/             # Database clients (ArangoDB, XTDB)
+│   │   ├── services/       # Business logic and fact-checking APIs
+│   │   ├── wasm/           # WebAssembly modules
+│   │   └── main.rs         # Entry point
+│   ├── Cargo.toml          # Rust dependencies
+│   └── Containerfile       # Rust container build
+├── elixir/                 # Elixir CRDT distributed state
+│   ├── lib/polygraph/
+│   │   ├── crdt/          # CRDT implementations
+│   │   ├── cluster/       # Node clustering
+│   │   └── sync/          # State synchronization
+│   ├── mix.exs            # Elixir dependencies
+│   └── Containerfile      # Elixir container build
+├── frontend/              # ReScript + Deno frontend
+│   ├── src/
+│   │   ├── components/    # React components (.res files)
+│   │   ├── pages/         # Page components
+│   │   ├── graphql/       # GraphQL queries and mutations
+│   │   └── Index.res      # Entry point
+│   ├── bsconfig.json      # ReScript configuration
+│   ├── deno.json          # Deno configuration
+│   └── Containerfile      # Frontend container build
+├── browser-extension/     # Browser extension
+│   ├── src/              # Extension code
+│   └── public/           # Extension assets (SVG icons)
+├── infrastructure/       # Infrastructure configs
+│   ├── podman/          # Podman compose files
+│   └── configs/         # Nginx, SSL configurations
+├── scripts/             # Utility scripts
+├── flake.nix           # Nix development environment
+└── docs/               # Documentation
 ```
 
 ## Configuration
 
 ### Environment Variables
 
-#### Backend (.env)
+See `.env.example` for complete configuration. Key variables:
 
 ```env
+# Database
+ARANGO_PASSWORD=your-strong-password
+XTDB_NODE_URL=http://xtdb:3000
+DRAGONFLY_URL=redis://dragonfly:6379
+
+# Elixir Cluster
+ERLANG_COOKIE=your-secret-cookie
+CRDT_SYNC_INTERVAL=5000
+
+# Authentication
+JWT_SECRET=your-jwt-secret
+
+# Fact-Checking APIs
+GOOGLE_FACT_CHECK_API_KEY=your-google-api-key
+NEWS_API_KEY=your-newsapi-key
+CLAIM_BUSTER_API_KEY=your-claimbuster-key
+
 # Application
-SECRET_KEY=your-secret-key
-JWT_SECRET_KEY=your-jwt-secret
+RUST_LOG=info
+ENABLE_WASM_SCORING=true
+GRAPHQL_PLAYGROUND=false
 
-# Databases
-ARANGO_HOST=localhost
-ARANGO_PASSWORD=changeme
-XTDB_NODE_URL=http://localhost:3000
-DRAGONFLY_HOST=localhost
-
-# External APIs (optional)
-OPENAI_API_KEY=your-key
-ANTHROPIC_API_KEY=your-key
-NEWSAPI_KEY=your-key
-
-# Features
-ENABLE_FACT_CHECKING=true
-ENABLE_TEMPORAL_TRACKING=true
+# SSL/TLS
+DOMAIN_NAME=polygraph.example.com
+LETSENCRYPT_EMAIL=admin@example.com
 ```
 
-#### Frontend (.env)
+**IMPORTANT**: Copy `.env.example` to `.env` and configure with your actual values. Never commit `.env` to version control!
 
-```env
-VITE_API_URL=http://localhost:8000
-```
+## GraphQL API Documentation
 
-## API Documentation
+GraphQL Playground is available at `http://localhost:8000/graphql` (development mode only).
 
-Full API documentation is available at `/docs` (Swagger UI) and `/redoc` (ReDoc) when running the backend server.
+### Key Operations
 
-Key endpoints:
+**Mutations:**
+- `verifyClaim(input: ClaimInput!)` - Verify a new claim
+- `updateVerification(id: ID!, verdict: Verdict!)` - Update claim verification
+- `registerUser(input: RegisterInput!)` - Register new user
+- `login(credentials: LoginInput!)` - Authenticate user
 
-- `POST /api/v1/claims/verify` - Verify a claim
-- `GET /api/v1/claims/{id}` - Get claim analysis
-- `GET /api/v1/claims/{id}/history` - Get claim verification history
-- `POST /api/v1/auth/register` - Register user
-- `POST /api/v1/auth/login` - Login
-- `GET /health` - Health check
+**Queries:**
+- `claim(id: ID!)` - Get single claim analysis
+- `claims(filter: ClaimFilter, pagination: Pagination)` - Search claims
+- `claimHistory(id: ID!)` - Get temporal verification history
+- `sourceCredibility(url: String!)` - Check source credibility
+- `me` - Get current user info
+
+**Subscriptions:**
+- `verificationUpdated(claimId: ID!)` - Real-time verification updates
+- `newClaims(filter: ClaimFilter)` - Subscribe to new claims
+
+GraphQL introspection and playground should be disabled in production.
 
 ## Architecture
 
 ### Data Flow
 
-1. **Claim Submission** → User submits claim via API, web UI, or extension
-2. **Text Processing** → NLP extracts entities, analyzes sentiment
-3. **Fact Checking** → Query multiple fact-checking databases
-4. **Credibility Scoring** → Algorithm calculates credibility score
-5. **Storage** → Store in ArangoDB, track in XTDB
-6. **Caching** → Cache results in Dragonfly
-7. **Response** → Return comprehensive analysis to user
+1. **Claim Submission** → User submits via GraphQL API, web UI, or extension
+2. **WASM Processing** → Browser-side credibility pre-scoring (optional)
+3. **Rust Backend** → Receives GraphQL mutation
+4. **Fact Checking** → Query real APIs (Google Fact Check, NewsAPI, ClaimBuster)
+5. **CRDT Update** → Distribute verification state across Elixir cluster
+6. **Credibility Scoring** → Rust algorithms calculate final scores
+7. **Storage** → Store in ArangoDB (current state), XTDB (temporal history)
+8. **Caching** → Cache results in Dragonfly
+9. **Response** → Return via GraphQL, optionally push via WebSocket subscription
 
-### Database Design
+### Architecture Highlights
 
-- **ArangoDB**: Main data store with graph capabilities for relationships
-- **XTDB**: Temporal database tracking claim verification history
-- **Dragonfly**: High-performance cache for API responses
+- **Rust Backend**: Memory-safe, high-performance GraphQL API
+- **Elixir CRDT Layer**: Distributed, eventually consistent state across nodes
+- **ArangoDB**: Multi-model storage for claims, sources, and relationships
+- **XTDB**: Bitemporal database for complete verification history
+- **Dragonfly**: High-throughput caching layer
+- **WASM Modules**: Browser-side performance for credibility pre-scoring
+- **ReScript Frontend**: Compile-time type safety for UI
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed design.
 
 ## Contributing
 
@@ -355,7 +457,7 @@ See [LICENSE-PALIMPSEST.txt](LICENSE-PALIMPSEST.txt) for full details.
 
 This project follows the **Rhodium Standard Repository (RSR)** framework for high-quality, maintainable open source software.
 
-**Current Status**: Silver Level ⭐
+**Current Status**: Platinum Level ⭐⭐⭐⭐
 
 Run compliance check:
 ```bash
@@ -373,7 +475,9 @@ just validate-rsr
 ✅ **CI/CD**: GitHub Actions workflows
 ✅ **Security**: Vulnerability disclosure, dual licensing
 ✅ **Community**: TPCF governance model
-✅ **Type Safety**: TypeScript + Python type hints
+✅ **Type Safety**: Rust + ReScript + Elixir (compile-time guarantees)
+✅ **WASM**: WebAssembly modules for performance
+✅ **Distributed**: CRDT-based eventual consistency
 ✅ **Containerization**: Podman/Docker support
 
 ## Support
