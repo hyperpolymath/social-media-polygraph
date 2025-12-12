@@ -64,11 +64,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - ARANGO_URL=http://arangodb:8529
+      - ARANGO_URL=https://arangodb:8529
       - ARANGO_USERNAME=root
       - ARANGO_PASSWORD=${ARANGO_PASSWORD:-changeme}
       - ARANGO_DATABASE=polygraph
-      - XTDB_NODE_URL=http://xtdb:3000
+      - XTDB_NODE_URL=https://xtdb:3000
       - DRAGONFLY_URL=redis://dragonfly:6379
       - ELIXIR_CRDT_NODES=elixir-node1:9100,elixir-node2:9100
       - RUST_LOG=info
