@@ -1,103 +1,79 @@
-# Rust
-target/
-Cargo.lock
-**/*.rs.bk
-*.pdb
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# RSR-compliant .gitignore
 
-# Elixir
-_build/
-deps/
-*.beam
-*.ez
-.fetch
-erl_crash.dump
-*.plt
-*.plt.hash
-.elixir_ls/
-
-# ReScript
-lib/bs/
-.bsb.lock
-.merlin
-
-# Deno
-.deno/
-deno.lock
-
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-dist/
-dist-ssr/
-*.local
-.npm
-.eslintcache
-
-# IDEs
-.vscode/
-.idea/
+# OS & Editor
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 *~
-.DS_Store
+.idea/
+.vscode/
 
-# Environment
-.env
-.env.local
-.env.*.local
+# Build
+/target/
+/_build/
+/build/
+/dist/
+/out/
 
-# Logs
-logs/
-*.log
+# Dependencies
+/node_modules/
+/vendor/
+/deps/
+/.elixir_ls/
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# Rust
+# Cargo.lock  # Keep for binaries
 
-# OS
-.DS_Store
-Thumbs.db
+# Elixir
+/cover/
+/doc/
+*.ez
+erl_crash.dump
 
-# Coverage
-coverage/
-.nyc_output/
+# Julia
+*.jl.cov
+*.jl.mem
+/Manifest.toml
 
-# Temporary
-tmp/
-temp/
-*.tmp
+# ReScript
+/lib/bs/
+/.bsb.lock
 
-# Container
-*.tar
+# Python (SaltStack only)
+__pycache__/
+*.py[cod]
+.venv/
 
-# SSL Certificates & Keys
-*.pem
-*.key
-*.crt
-*.csr
-*.p12
-*.pfx
-infrastructure/configs/ssl/*.pem
-infrastructure/configs/ssl/*.key
-infrastructure/configs/ssl/*.crt
+# Ada/SPARK
+*.ali
+/obj/
+/bin/
 
-# Secrets & Credentials
+# Haskell
+/.stack-work/
+/dist-newstyle/
+
+# Chapel
+*.chpl.tmp.*
+
+# Secrets
 .env
 .env.*
-!.env.example
+*.pem
+*.key
 secrets/
-credentials.json
-*.secret
 
-# Nix
-result
-result-*
-.direnv/
+# Test/Coverage
+/coverage/
+htmlcov/
 
-# WASM build artifacts
-*.wasm
-pkg/
+# Logs
+*.log
+/logs/
+
+# Temp
+/tmp/
+*.tmp
+*.bak
