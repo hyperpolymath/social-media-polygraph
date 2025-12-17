@@ -1,22 +1,16 @@
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
 # Security Contact Information
 # This file conforms to RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116.html)
 
-Contact: mailto:security@yourdomain.com
 Contact: https://github.com/hyperpolymath/social-media-polygraph/security/advisories/new
-Expires: 2025-12-31T23:59:59.000Z
-Encryption: https://yourdomain.com/pgp-key.txt
+Expires: 2026-12-31T23:59:59.000Z
 Preferred-Languages: en
-Canonical: https://yourdomain.com/.well-known/security.txt
+Canonical: https://github.com/hyperpolymath/social-media-polygraph/blob/main/.well-known/security.txt
 Policy: https://github.com/hyperpolymath/social-media-polygraph/blob/main/SECURITY.md
-Hiring: https://yourdomain.com/careers
 Acknowledgments: https://github.com/hyperpolymath/social-media-polygraph/blob/main/SECURITY.md#hall-of-fame
 
 # Security Response Process
 #
-# 1. Report vulnerabilities to security@yourdomain.com
+# 1. Report vulnerabilities via GitHub Security Advisories
 # 2. We acknowledge within 48 hours
 # 3. We provide status updates every 5 business days
 # 4. We aim to fix within 90 days
@@ -27,9 +21,10 @@ Acknowledgments: https://github.com/hyperpolymath/social-media-polygraph/blob/ma
 # Scope
 #
 # In Scope:
-# - Backend API (FastAPI)
-# - Frontend Application (React)
+# - Rust GraphQL backend
+# - ReScript/Deno frontend
 # - Browser Extension
+# - Elixir CRDT nodes
 # - Database configurations
 # - Container images
 # - CI/CD pipelines
@@ -45,9 +40,3 @@ Acknowledgments: https://github.com/hyperpolymath/social-media-polygraph/blob/ma
 # Currently: No formal program
 # Recognition: Hall of Fame listing + acknowledgment
 # Future: Considering program as project grows
-
------BEGIN PGP SIGNATURE-----
-Comment: This security.txt should be signed with your PGP key
-
-[Signature would go here - sign this file with GPG]
------END PGP SIGNATURE-----

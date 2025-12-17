@@ -22,7 +22,7 @@ Instead, please report them via one of the following methods:
 
 ### Alternative: Email
 
-Send an email to security@[yourdomain.com] with:
+Send an email to the maintainers via [GitHub Security Advisories](https://github.com/hyperpolymath/social-media-polygraph/security/advisories/new) with:
 
 - Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
 - Full paths of source file(s) related to the manifestation of the issue
@@ -153,7 +153,7 @@ Security researchers who have responsibly disclosed vulnerabilities:
 
 ## Contact
 
-- **Security Issues**: security@[yourdomain.com]
+- **Security Issues**: [GitHub Security Advisories](https://github.com/hyperpolymath/social-media-polygraph/security/advisories/new)
 - **General Questions**: See CONTRIBUTING.md for community channels
 
 ## Attribution

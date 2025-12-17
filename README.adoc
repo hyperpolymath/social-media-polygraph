@@ -490,14 +490,46 @@ just validate-rsr
 
 == Roadmap
 
-- [ ] Real-time claim monitoring
-- [ ] Multi-language support
-- [ ] Mobile applications
-- [ ] Enhanced ML models
-- [ ] Integration with more fact-checking services
+=== Phase 1: Foundation (Current - Q1 2025)
+- [x] Core architecture (Rust backend, ReScript frontend, Elixir CRDT)
+- [x] GraphQL API with async-graphql
+- [x] ArangoDB + XTDB + Dragonfly database stack
+- [x] Browser extension (Manifest V3)
+- [x] Security infrastructure (RFC 9116, CodeQL, Trivy scanning)
+- [x] CI/CD pipelines with GitHub Actions
+- [x] Podman containerization
+- [ ] Complete TS → ReScript frontend migration
+- [ ] Production domain configuration (replace placeholder domains)
+- [ ] PGP signing for security.txt
+
+=== Phase 2: Core Features (Q2 2025)
+- [ ] Real fact-checking API integrations (Google Fact Check, Snopes, PolitiFact)
+- [ ] ClaimBuster API integration for claim detection
+- [ ] Enhanced NLP models with rust-bert fine-tuning
+- [ ] Real-time claim monitoring via WebSocket subscriptions
+- [ ] Webhook support for notifications
+- [ ] PDF/CSV export functionality
+
+=== Phase 3: Scale & Performance (Q3 2025)
+- [ ] WASM browser-side credibility pre-scoring (optimization)
+- [ ] Multi-region CRDT cluster deployment
+- [ ] Advanced caching strategies with Dragonfly
+- [ ] Performance benchmarking and optimization
+- [ ] Load testing infrastructure
+
+=== Phase 4: User Experience (Q4 2025)
 - [ ] Advanced analytics dashboard
-- [ ] API webhooks
-- [ ] Export functionality (PDF, CSV reports)
+- [ ] Multi-language support (i18n)
+- [ ] Mobile applications (React Native or native)
+- [ ] Improved browser extension UX
+- [ ] Public API documentation portal
+
+=== Future Enhancements
+- [ ] Machine learning model marketplace
+- [ ] Community-contributed fact-check sources
+- [ ] Decentralized verification consensus
+- [ ] Academic research partnerships
+- [ ] Enterprise API tier
 
 ---
 
