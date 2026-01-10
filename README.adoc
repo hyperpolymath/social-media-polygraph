@@ -436,7 +436,7 @@ This tool is designed to combat misinformation and should be used responsibly:
 
 This project is *dual-licensed*:
 
-- *[MIT License](LICENSE)* - Permissive open source license
+- *[Palimpsest-MPL-1.0 License](LICENSE)* - Permissive open source license
 - *[Palimpsest License v0.8](LICENSE-PALIMPSEST.txt)* - Adds ethical use guidelines
 
 You may choose which license to follow. The Palimpsest License provides additional community expectations around:
