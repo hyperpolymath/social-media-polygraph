@@ -2,9 +2,13 @@
 
 > AI-powered fact-checking and misinformation detection for social media
 
-[![CI/CD](https://github.com/hyperpolymath/social-media-polygraph/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/hyperpolymath/social-media-polygraph/actions)
-[![License](https://img.shields.io/badge/license-MIT%20%2B%20Palimpsest-blue.svg)](LICENSE)
-[![RSR Compliance](https://img.shields.io/badge/RSR-Silver-blue.svg)](scripts/check-rsr-compliance.sh)
+[![CI/CD]()](https://github.com/hyperpolymath/social-media-polygraph/actions)
+image:[License,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+// SPDX-License-Identifier: PMPL-1.0
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+[![RSR Compliance]()](scripts/check-rsr-compliance.sh)
 [![Security](https://img.shields.io/badge/security-RFC%209116-green.svg)](.well-known/security.txt)
 
 == Overview
