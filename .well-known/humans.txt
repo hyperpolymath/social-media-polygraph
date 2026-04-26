@@ -1,0 +1,143 @@
+# humanstxt.org - The Humans Responsible & Technology
+
+# TEAM
+
+Lead Developer & Architect: [Your Name]
+Contact: lead [at] yourdomain.com
+Twitter: @yourusername
+Location: [Your Location]
+
+# THANKS
+
+Contributors: See CONTRIBUTORS.md
+Security Researchers: See SECURITY.md Hall of Fame
+Open Source Community: For amazing tools and libraries
+Fact-Checking Organizations: For their crucial work
+
+# TECHNOLOGY COLOPHON
+
+## Backend
+Language: Python 3.11
+Framework: FastAPI
+NLP: spaCy, TextBlob
+ML: scikit-learn, NumPy
+Dependency Management: Poetry
+
+## Databases
+Primary: ArangoDB (multi-model)
+Temporal: XTDB
+Cache: Dragonfly
+
+## Frontend
+Language: TypeScript
+Framework: React 18
+Build: Vite
+Styling: TailwindCSS
+Data Fetching: React Query
+Routing: React Router
+
+## Browser Extension
+Standard: Manifest V3
+Platforms: Chrome, Firefox
+
+## Infrastructure
+Containers: Podman
+Orchestration: Podman Compose
+CI/CD: GitHub Actions
+Web Server: nginx (production)
+
+## Development Tools
+Linting: Ruff (Python), ESLint (TypeScript)
+Formatting: Black (Python), Prettier (TypeScript)
+Type Checking: mypy (Python), tsc (TypeScript)
+Testing: pytest (Python), Vitest (TypeScript)
+Security Scanning: Trivy
+
+## Hosting
+Repository: GitHub
+Container Registry: [Your Registry]
+Production: [Your Hosting Provider]
+
+## Standards
+REST API: OpenAPI 3.0
+Security: RFC 9116 (security.txt)
+Versioning: Semantic Versioning
+Changelog: Keep a Changelog
+Code of Conduct: Contributor Covenant 2.1
+
+# VALUES
+
+- Open Source: MIT License
+- Privacy First: No data selling
+- Transparency: Open development
+- Security: Responsible disclosure
+- Community: Inclusive and welcoming
+- Quality: Comprehensive testing
+- Documentation: Clear and complete
+- Accessibility: WCAG 2.1 AA goal
+- Sustainability: Mental health matters
+- Ethics: Combat misinformation responsibly
+
+# ARCHITECTURE
+
+- Type Safety: Python type hints, TypeScript
+- Memory Safety: Garbage collected languages
+- Async First: FastAPI async/await
+- Offline Capable: Cache-first strategies
+- Graph Data: ArangoDB for relationships
+- Temporal Tracking: XTDB for history
+- High Performance: Dragonfly caching
+- Scalable: Stateless backend
+- Observable: Prometheus metrics
+- Reproducible: Podman containerization
+
+# PROJECT GOALS
+
+Mission: Combat misinformation on social media
+Vision: Informed, critical thinking digital citizens
+Approach: AI-powered, transparent fact-checking
+Principles: Open, ethical, privacy-respecting
+
+# CONTRIBUTING
+
+We welcome contributors of all skill levels!
+
+- Code: See CONTRIBUTING.md
+- Issues: Report bugs and suggest features
+- Documentation: Help improve our docs
+- Testing: Add test coverage
+- Translation: Multi-language support needed
+- Design: UI/UX improvements
+- Security: Responsible disclosure welcome
+
+# LICENSE
+
+Software: MIT License
+Documentation: CC BY 4.0
+AI Policy: See .well-known/ai.txt
+
+# CONTACT
+
+- Website: https://yourdomain.com
+- Repository: https://github.com/hyperpolymath/social-media-polygraph
+- Email: contact@yourdomain.com
+- Security: security@yourdomain.com
+- Conduct: conduct@yourdomain.com
+
+# INSPIRATION
+
+Inspired by the need for:
+- Critical thinking in digital age
+- Transparency in fact-checking
+- Open source solutions to misinformation
+- Ethical AI development
+- Community-driven tools
+
+Built with ❤️ for a more informed internet
+
+/* SITE */
+Last update: 2024-01-15
+Standards: humanstxt.org
+Encoding: UTF-8
+Language: English
+Doctype: Markdown
