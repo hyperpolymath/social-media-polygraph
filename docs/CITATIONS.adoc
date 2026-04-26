@@ -1,0 +1,36 @@
+= social-media-polygraph - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{social-media-polygraph_2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {social-media-polygraph},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/social-media-tools},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2026) _social-media-polygraph_ [Computer software]. Available at: https://github.com/hyperpolymath/social-media-tools
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'social-media-polygraph' (2026) <https://github.com/hyperpolymath/social-media-tools>
+
+== MLA
+
+Jewell, Jonathan D.A. "social-media-polygraph." 2026, github.com/hyperpolymath/social-media-tools.
+
+== APA 7
+
+Jewell, J.D.A. (2026). _social-media-polygraph_ [Computer software]. GitHub. https://github.com/hyperpolymath/social-media-tools
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]
