@@ -85,3 +85,4 @@ deps/
 .cache/
 build/
 dist/
+!.env.example
