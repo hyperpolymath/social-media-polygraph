@@ -18,6 +18,6 @@
   <source>https://github.com/hyperpolymath/social-media-polygraph</source>
   <language>en</language>
   <relation>https://rhodium.sh</relation>
-  <rights>AGPL-3.0-or-later OR LicenseRef-Palimpsest-0.5</rights>
+  <rights>MPL-2.0</rights>
   <dcterms:license>https://spdx.org/licenses/AGPL-3.0-or-later.html</dcterms:license>
 </metadata>
