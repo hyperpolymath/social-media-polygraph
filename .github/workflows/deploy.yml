@@ -16,7 +16,7 @@ jobs:
       attestations: write
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
 
       - name: Set up Podman
         run: |
@@ -45,14 +45,14 @@ jobs:
           echo "frontend_digest=$(cat frontend.digest)" >> "$GITHUB_OUTPUT"
 
       - name: Attest backend container provenance
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ${{ secrets.REGISTRY_URL }}/polygraph-backend
           subject-digest: ${{ steps.push.outputs.backend_digest }}
           push-to-registry: true
 
       - name: Attest frontend container provenance
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ${{ secrets.REGISTRY_URL }}/polygraph-frontend
           subject-digest: ${{ steps.push.outputs.frontend_digest }}
