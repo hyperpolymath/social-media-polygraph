@@ -10,6 +10,10 @@ jobs:
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
@@ -29,10 +33,29 @@ jobs:
           echo "${{ secrets.REGISTRY_PASSWORD }}" | podman login -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin ${{ secrets.REGISTRY_URL }}
 
       - name: Push images
+        id: push
         run: |
           podman tag polygraph-backend:${{ github.ref_name }} ${{ secrets.REGISTRY_URL }}/polygraph-backend:${{ github.ref_name }}
           podman tag polygraph-frontend:${{ github.ref_name }} ${{ secrets.REGISTRY_URL }}/polygraph-frontend:${{ github.ref_name }}
-          podman push ${{ secrets.REGISTRY_URL }}/polygraph-backend:${{ github.ref_name }}
-          podman push ${{ secrets.REGISTRY_URL }}/polygraph-frontend:${{ github.ref_name }}
+          # --digestfile captures the exact manifest digest of the pushed image,
+          # which is what build-provenance attestation must reference.
+          podman push --digestfile backend.digest ${{ secrets.REGISTRY_URL }}/polygraph-backend:${{ github.ref_name }}
+          podman push --digestfile frontend.digest ${{ secrets.REGISTRY_URL }}/polygraph-frontend:${{ github.ref_name }}
+          echo "backend_digest=$(cat backend.digest)" >> "$GITHUB_OUTPUT"
+          echo "frontend_digest=$(cat frontend.digest)" >> "$GITHUB_OUTPUT"
+
+      - name: Attest backend container provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        with:
+          subject-name: ${{ secrets.REGISTRY_URL }}/polygraph-backend
+          subject-digest: ${{ steps.push.outputs.backend_digest }}
+          push-to-registry: true
+
+      - name: Attest frontend container provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        with:
+          subject-name: ${{ secrets.REGISTRY_URL }}/polygraph-frontend
+          subject-digest: ${{ steps.push.outputs.frontend_digest }}
+          push-to-registry: true
 
       # Add deployment steps here (e.g., to Kubernetes, cloud platform, etc.)
