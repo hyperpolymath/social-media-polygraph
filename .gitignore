@@ -94,3 +94,6 @@ bun.lockb
 yarn.lock
 pnpm-lock.yaml
 .npmrc
+
+# Pages output
+/_site/

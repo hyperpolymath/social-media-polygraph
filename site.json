@@ -1,0 +1,79 @@
+{
+  "title": "social-media-polygraph",
+  "output": "_site",
+  "index_page": "index.html",
+  "copy": [
+    {
+      "from": "www/public",
+      "to": ".",
+      "required": false
+    },
+    {
+      "from": "www/.well-known",
+      "to": ".well-known",
+      "required": false
+    },
+    {
+      "from": "LICENSES",
+      "to": "LICENSES",
+      "required": false
+    },
+    {
+      "from": "backend",
+      "to": "backend",
+      "required": false
+    },
+    {
+      "from": "browser-extension",
+      "to": "browser-extension",
+      "required": false
+    },
+    {
+      "from": "contractiles",
+      "to": "contractiles",
+      "required": false
+    },
+    {
+      "from": "docs",
+      "to": "docs",
+      "required": false
+    },
+    {
+      "from": "elixir",
+      "to": "elixir",
+      "required": false
+    },
+    {
+      "from": "frontend",
+      "to": "frontend",
+      "required": false
+    },
+    {
+      "from": "infrastructure",
+      "to": "infrastructure",
+      "required": false
+    },
+    {
+      "from": "README.adoc",
+      "to": "README.adoc",
+      "required": false
+    }
+  ],
+  "listing": [
+    {
+      "root": "docs",
+      "label": "Documentation",
+      "match": [
+        ".adoc",
+        ".md"
+      ],
+      "link_target": "source"
+    }
+  ],
+  "nojekyll": true,
+  "notes": [
+    "Derived by scripts/estate-ruby-exit.mjs — review before merge.",
+    "index_page is hub/index.html when the repo publishes index.json: GitHub Pages",
+    "serves index.json for '/' if no index.html exists, and some consumers rely on it."
+  ]
+}
