@@ -1,3 +1,4 @@
+# This workflow is managed by gh actions-lock.
 # SPDX-License-Identifier: MPL-2.0
 name: Deploy
 
@@ -16,13 +17,14 @@ jobs:
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       id-token: write
       attestations: write
 
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      - uses: actions/checkout@v7.0.1
 
       - name: Set up Podman
         run: |
@@ -51,14 +53,14 @@ jobs:
           echo "frontend_digest=$(cat frontend.digest)" >> "$GITHUB_OUTPUT"
 
       - name: Attest backend container provenance
-        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        uses: actions/attest-build-provenance@v4.2.2
         with:
           subject-name: ${{ secrets.REGISTRY_URL }}/polygraph-backend
           subject-digest: ${{ steps.push.outputs.backend_digest }}
           push-to-registry: true
 
       - name: Attest frontend container provenance
-        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        uses: actions/attest-build-provenance@v4.2.2
         with:
           subject-name: ${{ secrets.REGISTRY_URL }}/polygraph-frontend
           subject-digest: ${{ steps.push.outputs.frontend_digest }}

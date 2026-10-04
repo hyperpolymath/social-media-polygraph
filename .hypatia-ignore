@@ -20,10 +20,7 @@
 # grow.
 #
 # Inventory taken 2026-08-06 across all 424 estate repositories.
-# Files covered: 5 rescript
+# Files covered: 0. The 5 ReScript entries (frontend/src/**/*.res) were removed
+# 2026-10-04 (issue #110): #84 replaced those files with AffineScript (.affine)
+# ports, so the paths no longer exist and the exemptions excused nothing.
 
-cicd_rules/banned_language_file:frontend/src/Index.res
-cicd_rules/banned_language_file:frontend/src/graphql/Client.res
-cicd_rules/banned_language_file:frontend/src/graphql/Mutations.res
-cicd_rules/banned_language_file:frontend/src/graphql/Queries.res
-cicd_rules/banned_language_file:frontend/src/pages/VerifyPage.res

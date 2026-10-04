@@ -51,7 +51,8 @@
       button.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
-        verifyTweet(tweetText.textContent, tweet);
+        // verifyTweet() catches and displays its own errors; nothing to await.
+        void verifyTweet(tweetText.textContent, tweet);
       });
 
       // Add button to tweet actions

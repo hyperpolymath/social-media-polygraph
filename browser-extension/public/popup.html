@@ -100,6 +100,19 @@
       border-radius: 8px;
       color: #dc2626;
     }
+
+    /* Accessible name for the claim box without changing the visual layout. */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   </style>
 </head>
 <body>
@@ -111,6 +124,7 @@
     Social Media Polygraph
   </h1>
 
+  <label for="claimText" class="visually-hidden">Claim to verify</label>
   <textarea id="claimText" placeholder="Paste a claim to verify..."></textarea>
 
   <button id="verifyBtn">Verify Claim</button>

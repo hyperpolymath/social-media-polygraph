@@ -1,3 +1,4 @@
+# This workflow is managed by gh actions-lock.
 # SPDX-License-Identifier: MPL-2.0
 # Prevention workflow - validates all workflows have proper security config
 name: Workflow Security Linter
@@ -15,15 +16,22 @@ permissions: read-all
 jobs:
   lint-workflows:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      - uses: actions/checkout@v7.0.1
 
       - name: Check SPDX headers
         run: |
           errors=0
           for f in .github/workflows/*.yml .github/workflows/*.yaml; do
             [ -f "$f" ] || continue
-            if ! head -1 "$f" | grep -q "SPDX-License-Identifier"; then
+            # Scan the leading comment block, not line 1. `gh actions-lock`
+            # inserts "# This workflow is managed by gh actions-lock." at line 1
+            # whenever it mints actions.lock, so a line-1 test fails every
+            # workflow it touches. Same predicate as the estate governance
+            # bundle (hyperpolymath/standards governance-reusable.yml).
+            if ! awk '/^---[[:space:]]*$/ { next } /^#/ { print; next } { exit }' "$f" \
+                 | grep -q "^# SPDX-License-Identifier:"; then
               echo "ERROR: $f missing SPDX header"
               errors=$((errors + 1))
             fi
