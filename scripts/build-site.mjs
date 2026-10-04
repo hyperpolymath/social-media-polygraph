@@ -161,7 +161,9 @@ const SKIP = new Set([".git", "node_modules", "target", "_site", ".venv"]);
 // types (SonarCloud javascript:S2871), and so the reproducibility hash stays
 // byte-identical to the comparator-less version.
 function byCodeUnit(a, b) {
-  return a < b ? -1 : a > b ? 1 : 0;
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
 }
 
 function byteSize(relPath) {

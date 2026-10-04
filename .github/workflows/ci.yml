@@ -25,7 +25,8 @@ name: CI/CD Pipeline
 #   against `frontend/package-lock.json` and npm scripts. npm is banned by
 #   estate policy. `package.json` was removed in #35 (npm -> Deno), `deno.json`
 #   in #85, and the ReScript sources were replaced in #84 by five AffineScript
-#   stubs (`frontend/src/**/*.affine`, each `module X; // TODO`). There is no
+#   stubs (`frontend/src/**/*.affine`, each just a module line and a placeholder
+#   comment). There is no
 #   manifest, no lockfile it could resolve and no buildable frontend. It died in
 #   `actions/setup-node` with "Some specified paths were not resolved, unable to
 #   cache dependencies." When the AffineScript frontend has real code, gate it
@@ -53,6 +54,7 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # `upload-sarif` writes to the Code Scanning API and needs
     # `security-events: write`. With only the workflow-level `contents: read`,
     # this job has been red on every push to `main` since at least 2026-09-20
