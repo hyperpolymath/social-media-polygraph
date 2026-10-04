@@ -37,7 +37,7 @@ redis = { version = "0.24", features = ["aio", "tokio-comp", "connection-manager
 
 # Cryptography & Auth
 jsonwebtoken = "10.3.0"
-argon2 = "0.5"
+argon2 = "0.6"
 rand = "0.9"
 uuid = { version = "1.6", features = ["v4", "serde"] }
 
@@ -76,7 +76,7 @@ typed-builder = "0.18"
 [dev-dependencies]
 criterion = { version = "0.5", features = ["async_tokio"] }
 proptest = "1.4"
-mockall = "0.12"
+mockall = "0.15"
 
 [profile.release]
 opt-level = 3
