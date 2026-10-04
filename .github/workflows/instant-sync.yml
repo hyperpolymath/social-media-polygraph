@@ -22,6 +22,13 @@ jobs:
     env:
       FARM_DISPATCH_TOKEN: ${{ secrets.FARM_DISPATCH_TOKEN }}
     steps:
+      # This job handles a secret, so audit outbound egress (estate pattern,
+      # same pin as hyperpolymath/standards' own workflows).
+      - name: Harden runner (egress audit)
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
       - name: Skip notice (secret not propagated)
         if: env.FARM_DISPATCH_TOKEN == ''
         run: echo "::notice::FARM_DISPATCH_TOKEN is not set for this repo; forge propagation skipped."
