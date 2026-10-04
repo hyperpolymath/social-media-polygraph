@@ -14,7 +14,9 @@ chrome.runtime.onInstalled.addListener(() => {
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === 'verifySelection' && info.selectionText) {
-    verifyClaim(info.selectionText, tab.url);
+    // Fire-and-forget from a menu click: nothing awaits this, so handle the
+    // rejection here. verifyClaim() has already logged the underlying error.
+    verifyClaim(info.selectionText, tab.url).catch(() => { /* already logged */ });
   }
 });
 

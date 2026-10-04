@@ -144,7 +144,7 @@ function walk(dir) {
       else if (entry.isFile()) files.push(abs);
     }
   }
-  return files.map(toPosixAbs).sort();
+  return files.map(toPosixAbs).sort(byCodeUnit);
 }
 
 function toPosixAbs(abs) {
@@ -155,6 +155,14 @@ function toPosixAbs(abs) {
 // dependencies, and the site output itself (walking _site while writing _site
 // is how a "publish everything" build turns into a fixed point that never ends).
 const SKIP = new Set([".git", "node_modules", "target", "_site", ".venv"]);
+
+// Explicit UTF-16 code-unit ordering: exactly what a bare `.sort()` does for
+// strings. Written out so the ordering does not silently depend on element
+// types (SonarCloud javascript:S2871), and so the reproducibility hash stays
+// byte-identical to the comparator-less version.
+function byCodeUnit(a, b) {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
 
 function byteSize(relPath) {
   try {
@@ -297,7 +305,7 @@ function build(opts) {
   if (config.nojekyll !== false) outputs.set(".nojekyll", Buffer.from("\n", "utf8"));
 
   const hash = createHash("sha256");
-  for (const site of [...outputs.keys()].sort()) {
+  for (const site of [...outputs.keys()].sort(byCodeUnit)) {
     hash.update(`${site}\u0000`);
     hash.update(outputs.get(site));
     hash.update("\n");

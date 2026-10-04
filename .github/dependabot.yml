@@ -1,8 +1,18 @@
 # SPDX-License-Identifier: MPL-2.0
+#
+# Every `directory:` below must point at a manifest that actually exists.
+# Dependabot fails the whole update job, not just one ecosystem, when it
+# doesn't (issue #110):
+#   * cargo  -> /backend  (Cargo.toml lives there, not at the repo root)
+#   * mix    -> /elixir   (mix.exs lives there, not at the repo root)
+#   * nix    -> removed: Nix is retired estate-wide (Guix policy) and the repo
+#               has no flake.nix / *.nix. Every "nix in /." run failed.
+#   * npm    -> removed: npm is banned estate-wide and the repo has no
+#               package.json. Every "npm_and_yarn in /." run failed.
 version: 2
 updates:
   - package-ecosystem: "cargo"
-    directory: "/"
+    directory: "/backend"
     schedule:
       interval: "weekly"
     ignore:
@@ -21,14 +31,6 @@ updates:
         patterns:
           - "*"
   - package-ecosystem: "mix"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "nix"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/elixir"
     schedule:
       interval: "weekly"
