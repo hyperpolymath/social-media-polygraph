@@ -17,7 +17,7 @@ async-trait = "0.1"
 
 # Web framework
 axum = { version = "0.8", features = ["macros"] }
-tower = { version = "0.4", features = ["full"] }
+tower = { version = "0.5", features = ["full"] }
 tower-http = { version = "0.5", features = ["cors", "compression-gzip", "trace"] }
 
 # GraphQL
