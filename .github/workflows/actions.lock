@@ -5,11 +5,11 @@ version: 'v0.0.3'
 workflows:
     '.github/workflows/ci.yml':
         - 'actions/checkout@v7.0.1'
-        - 'aquasecurity/trivy-action@8f28faec26515256b6d22074d1d2a8986f4cbd87'
-        - 'github/codeql-action@v4.39.1'
+        - 'aquasecurity/trivy-action@38b337fff0a2f984d5be173c99e3f633438167ec'
+        - 'github/codeql-action@v4.39.3'
     '.github/workflows/codeql.yml':
         - 'actions/checkout@v7.0.1'
-        - 'github/codeql-action@v4.39.1'
+        - 'github/codeql-action@v4.39.3'
     '.github/workflows/deploy.yml':
         - 'actions/attest-build-provenance@v4.2.2'
         - 'actions/checkout@v7.0.1'
@@ -94,17 +94,17 @@ dependencies:
         uses:
             - 'actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb'
             - 'actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8'
-    'aquasecurity/trivy-action@8f28faec26515256b6d22074d1d2a8986f4cbd87':
+    'aquasecurity/trivy-action@38b337fff0a2f984d5be173c99e3f633438167ec':
         ref: 'master'
-        commit: 'sha1-8f28faec26515256b6d22074d1d2a8986f4cbd87'
+        commit: 'sha1-38b337fff0a2f984d5be173c99e3f633438167ec'
         owner_id: 12783832
         repo_id: 268833180
         uses:
             - 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
             - 'aquasecurity/setup-trivy@81e514348e19b6112ce2a7e3ecbafe19c1e1f567'
-    'github/codeql-action@v4.39.1':
-        ref: 'v4.39.1'
-        commit: 'sha1-9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+    'github/codeql-action@v4.39.3':
+        ref: 'v4.39.3'
+        commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
     'hyperpolymath/smtp-notify-action@v0.5.1':
