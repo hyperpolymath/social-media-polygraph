@@ -89,14 +89,6 @@ inherits = "release"
 strip = false
 debug = true
 
-[[bench]]
-name = "credibility_scoring"
-harness = false
-
-[[bench]]
-name = "graphql_queries"
-harness = false
-
 [lib]
 name = "polygraph"
 path = "src/lib.rs"
